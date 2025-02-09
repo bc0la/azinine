@@ -108,6 +108,9 @@ type configUpdatedMsg struct {
 		AwsSecretKey         string
 		AwsToken             string
 		TestValue            string
+		TenantID             string
+		ClientID             string
+		ClientSecret         string
 	}
 }
 type AffectedAsset struct {
@@ -175,6 +178,9 @@ type model struct {
 		AwsSecretKey         string
 		AwsToken             string
 		TestValue            string
+		TenantID             string
+		ClientID             string
+		ClientSecret         string
 	}
 	// textinput
 	focusIndex int
@@ -201,6 +207,8 @@ type model struct {
 type azureAuthModel struct {
 	authenticated bool
 	token         string
+	authMethod    int // 0 for browser, 1 for SPN
+	currentIndex  int // For menu navigation
 }
 
 type configWrittenMsg struct{}
@@ -219,6 +227,9 @@ func initialModel() model {
 		AwsSecretKey         string
 		AwsToken             string
 		TestValue            string
+		TenantID             string
+		ClientID             string
+		ClientSecret         string
 	}{
 		PwndocUrl:            "https://192.168.1.51:8443",
 		PwndocAuditName:      "test",
@@ -228,6 +239,9 @@ func initialModel() model {
 		AwsSecretKey:         "",
 		AwsToken:             "",
 		TestValue:            "test",
+		TenantID:             "",
+		ClientID:             "",
+		ClientSecret:         "",
 	}
 
 	// Check if config file exists and load it
@@ -334,6 +348,8 @@ func initialAzureAuthModel() azureAuthModel {
 	return azureAuthModel{
 		authenticated: false,
 		token:         "",
+		authMethod:    0,
+		currentIndex:  0,
 	}
 }
 
@@ -571,28 +587,75 @@ func (m *model) updateAzureAuth(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "j", "down":
+			if !m.authModel.authenticated {
+				m.authModel.currentIndex = (m.authModel.currentIndex + 1) % 2
+			}
+			return m, nil
+		case "k", "up":
+			if !m.authModel.authenticated {
+				m.authModel.currentIndex = (m.authModel.currentIndex - 1 + 2) % 2
+			}
+			return m, nil
+		case " ":
+			if !m.authModel.authenticated {
+				m.authModel.authMethod = m.authModel.currentIndex
+			}
+			return m, nil
 		case "enter":
-			// Perform authentication using InteractiveBrowserCredential
-			cred, err := azidentity.NewInteractiveBrowserCredential(nil)
-			if err != nil {
-				fmt.Println("Failed to create credential:", err)
-				return m, nil
-			}
+			if !m.authModel.authenticated {
+				if m.authModel.authMethod == 0 {
+					// Browser authentication
+					cred, err := azidentity.NewInteractiveBrowserCredential(nil)
+					if err != nil {
+						m.DebugMsgText = fmt.Sprintf("Failed to create credential: %v", err)
+						return m, nil
+					}
 
-			token, err := cred.GetToken(context.TODO(), policy.TokenRequestOptions{
-				Scopes: []string{"https://management.azure.com/.default"},
-			})
-			if err != nil {
-				fmt.Println("Failed to get token:", err)
-				return m, nil
-			}
+					token, err := cred.GetToken(context.TODO(), policy.TokenRequestOptions{
+						Scopes: []string{"https://management.azure.com/.default"},
+					})
+					if err != nil {
+						m.DebugMsgText = fmt.Sprintf("Failed to get token: %v", err)
+						return m, nil
+					}
 
-			m.authModel.authenticated = true
-			m.authModel.token = token.Token
-			m.ModuleSelection[0].Selected = false
+					m.authModel.authenticated = true
+					m.authModel.token = token.Token
+				} else {
+					// SPN authentication
+					if m.ConfigVars.TenantID == "" || m.ConfigVars.ClientID == "" || m.ConfigVars.ClientSecret == "" {
+						m.DebugMsgText = "Missing SPN credentials in config"
+						return m, nil
+					}
+
+					cred, err := azidentity.NewClientSecretCredential(
+						m.ConfigVars.TenantID,
+						m.ConfigVars.ClientID,
+						m.ConfigVars.ClientSecret,
+						nil,
+					)
+					if err != nil {
+						m.DebugMsgText = fmt.Sprintf("Failed to create credential: %v", err)
+						return m, nil
+					}
+
+					token, err := cred.GetToken(context.TODO(), policy.TokenRequestOptions{
+						Scopes: []string{"https://management.azure.com/.default"},
+					})
+					if err != nil {
+						m.DebugMsgText = fmt.Sprintf("Failed to get token: %v", err)
+						return m, nil
+					}
+
+					m.authModel.authenticated = true
+					m.authModel.token = token.Token
+				}
+			} else {
+				m.ModuleSelection[0].Selected = false
+			}
 			return m, nil
 		case "q", "esc":
-			// Exit the Azure authentication view
 			return m, tea.Quit
 		}
 	}
@@ -1201,13 +1264,47 @@ func azureAuthView(m model) string {
 	b.WriteString("Azure Authentication:\n\n")
 
 	if m.authModel.authenticated {
-		b.WriteString("Authenticated successfully!\n")
-		b.WriteString(fmt.Sprintf("Token: %s\n", m.authModel.token))
+		b.WriteString("✅ Authenticated successfully!\n")
+		b.WriteString("Token obtained. Press enter to continue.\n")
 	} else {
-		b.WriteString("Press enter to authenticate using your browser.\n")
+		b.WriteString("Select authentication method:\n\n")
+
+		// Browser login option
+		line := "[ ] Browser Login"
+		if m.authModel.authMethod == 0 {
+			line = "[x] Browser Login"
+		}
+		if m.authModel.currentIndex == 0 {
+			line = highlightStyle.Render(line)
+		}
+		b.WriteString(line + "\n")
+
+		// SPN login option
+		line = "[ ] Service Principal"
+		if m.authModel.authMethod == 1 {
+			line = "[x] Service Principal"
+		}
+		if m.authModel.currentIndex == 1 {
+			line = highlightStyle.Render(line)
+		}
+		b.WriteString(line + "\n\n")
+
+		if m.authModel.authMethod == 1 {
+			b.WriteString("Service Principal Configuration:\n")
+			masked := strings.Repeat("*", 8)
+			b.WriteString(fmt.Sprintf("Tenant ID:     %s\n", stringOrDefault(m.ConfigVars.TenantID, masked)))
+			b.WriteString(fmt.Sprintf("Client ID:     %s\n", stringOrDefault(m.ConfigVars.ClientID, masked)))
+			b.WriteString(fmt.Sprintf("Client Secret: %s\n", stringOrDefault(m.ConfigVars.ClientSecret, masked)))
+		}
+
+		if m.DebugMsgText != "" {
+			b.WriteString("\nError: " + m.DebugMsgText + "\n")
+		}
 	}
 
-	b.WriteString(subtleStyle.Render("\nPress enter to authenticate") + dotStyle +
+	b.WriteString(subtleStyle.Render("\nUse j/k or up/down to navigate") + dotStyle +
+		subtleStyle.Render("space to select") + dotStyle +
+		subtleStyle.Render("enter to authenticate") + dotStyle +
 		subtleStyle.Render("q, esc to quit"))
 	return b.String()
 }
@@ -1579,6 +1676,13 @@ func centerString(text string, width int) string {
 	leftPad := padding / 2
 	rightPad := padding - leftPad
 	return strings.Repeat(" ", leftPad) + text + strings.Repeat(" ", rightPad)
+}
+
+func stringOrDefault(value, defaultValue string) string {
+	if value == "" {
+		return defaultValue
+	}
+	return value
 }
 
 // tuiCmd represents the tui command
