@@ -1,15 +1,5 @@
 # Azinine
 
-```text
- ░▒▓██████▓▒░  ░▒▓████████▓▒░ ░▒▓█▓▒░ ░▒▓███████▓▒░  ░▒▓█▓▒░ ░▒▓███████▓▒░  ░▒▓████████▓▒░
-░▒▓█▓▒░░▒▓█▓▒░        ░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░
-░▒▓█▓▒░░▒▓█▓▒░      ░▒▓██▓▒░  ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░
-░▒▓████████▓▒░    ░▒▓██▓▒░    ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓██████▓▒░
-░▒▓█▓▒░░▒▓█▓▒░  ░▒▓██▓▒░      ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░
-░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░
-░▒▓█▓▒░░▒▓█▓▒░ ░▒▓████████▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓████████▓▒░
-```
-
 A cloud security assessment tool focused on gathering configuration data from Azure and AWS for security reviews and penetration tests. This is not yet pretty or functional and is just the groundwork.
 
 Uses a combo of scoutsuite reports and manual queries as data sources.
@@ -30,11 +20,17 @@ Uses a combo of scoutsuite reports and manual queries as data sources.
 ### AWS Checks
 
 [x] Access key last rotate date (to add configurable threshold)
+
 [ ] CloudFormation Template Analysis
+
 [ ] Lambda Source Code Review
+
 [ ] Lambda Environment Variables Analysis
+
 [ ] S3 Bucket Security Configuration Review
+
 [ ] SQS Queue Configuration Analysis
+
 [ ] IAM Permission Review
 
 ## Getting Started
