@@ -14,24 +14,18 @@ Uses a combo of scoutsuite reports and manual queries as data sources.
 
 ### Azure Checks (planned)
 
-[ ] Pull Function App environment vars/source code
-[ ] Storage Blob Access Permissions
+- [ ] Pull Function App environment vars/source code
+- [ ] Storage Blob Access Permissions
 
 ### AWS Checks
 
-[x] Access key last rotate date (to add configurable threshold)
-
-[ ] CloudFormation Template Analysis
-
-[ ] Lambda Source Code Review
-
-[ ] Lambda Environment Variables Analysis
-
-[ ] S3 Bucket Security Configuration Review
-
-[ ] SQS Queue Configuration Analysis
-
-[ ] IAM Permission Review
+- [x] Access key last rotate date (to add configurable threshold)
+- [ ] CloudFormation Template Analysis
+- [ ] Lambda Source Code Review
+- [ ] Lambda Environment Variables Analysis
+- [ ] S3 Bucket Security Configuration Review
+- [ ] SQS Queue Configuration Analysis
+- [ ] IAM Permission Review
 
 ## Getting Started
 
