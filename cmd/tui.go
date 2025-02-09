@@ -233,7 +233,7 @@ func initialModel() model {
 	}{
 		PwndocUrl:            "https://192.168.1.51:8443",
 		PwndocAuditName:      "test",
-		OutputDir:            "/home/username/crumbus/outputs",
+		OutputDir:            "/home/username/Azinine/outputs",
 		ScoutSuiteReportsDir: "~/op/recon/cloud/scout",
 		AwsAccessKey:         "",
 		AwsSecretKey:         "",
@@ -1166,72 +1166,73 @@ func moduleSelectionView(m model) string {
 	}
 	b.WriteString("\n\n")
 	asciiArt := []string{
-		"░█████╗░██████╗░██╗░░░██╗███╗░░░███╗██████╗░██╗░░░██╗░██████╗",
-		"██╔══██╗██╔══██╗██║░░░██║████╗░████║██╔══██╗██║░░░██║██╔════╝",
-		"██║░░╚═╝██████╔╝██║░░░██║██╔████╔██║██████╦╝██║░░░██║╚█████╗░",
-		"██║░░██╗██╔══██╗██║░░░██║██║╚██╔╝██║██╔══██╗██║░░░██║░╚═══██╗",
-		"╚█████╔╝██║░░██║╚██████╔╝██║░╚═╝░██║██████╦╝╚██████╔╝██████╔╝",
-		"░╚════╝░╚═╝░░╚═╝░╚═════╝░╚═╝░░░░░╚═╝╚═════╝░░╚═════╝░╚═════╝░",
+		" ░▒▓██████▓▒░  ░▒▓████████▓▒░ ░▒▓█▓▒░ ░▒▓███████▓▒░  ░▒▓█▓▒░ ░▒▓███████▓▒░  ░▒▓████████▓▒░",
+		"░▒▓█▓▒░░▒▓█▓▒░        ░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░",
+		"░▒▓█▓▒░░▒▓█▓▒░      ░▒▓██▓▒░  ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░",
+		"░▒▓████████▓▒░    ░▒▓██▓▒░    ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓██████▓▒░",
+		"░▒▓█▓▒░░▒▓█▓▒░  ░▒▓██▓▒░      ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░",
+		"░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░        ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░",
+		"░▒▓█▓▒░░▒▓█▓▒░ ░▒▓████████▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓████████▓▒░",
 	}
 	// Append randomly selected message to asciiArt
 	slogans := []string{
-		"Crumbus: Because Reality Needed a Reboot!",
-		"Unravel the Fabric of Usual, Stitch by Crumbus!",
-		"Hop on the Crumbus, Where Directions Don't Matter!",
-		"Squeeze More Out of Nowhere with Crumbus!",
-		"Whistle While You Work, Dance While You Crumbus!",
-		"Turn Left at Tomorrow, You're on Crumbus Time!",
-		"From Nonsense to Sense, All Aboard the Crumbus Express!",
-		"Crumbus: Where the Ordinary Meets the Bread Crumbs.",
-		"Dive into the Dough of Innovation with Crumbus!",
-		"Crumbus: Because Reality Was Too Mainstream.",
-		"Sprinkle a Little Crumbus on Your Day!",
-		"Unleash the Whimsy - Crumbus is Here!",
-		"Crumbus: Baking Your Ideas to Perfection.",
-		"Twist, Toss, Crumble - That's the Crumbus Way!",
-		"Keep Crumbing Along with Crumbus!",
-		"Catch the Crumbs of Creativity with Crumbus.",
-		"Crumbus: A Sprinkle of Nonsense in Every Byte.",
-		"Crumbus: Orbiting the Bagel of Possibility!",
-		"Flip the Pancake Skyward with Crumbus!",
-		"Buckle Your Shoe, Click Your Pen, Launch Crumbus!",
-		"Echoes of Crumbus, in a Whispering Cheese Wheel!",
-		"Juggle the Moon, Spin the Sun, It's Crumbus Time!",
-		"Dance with Shadows, Paint with Wind, Crumbus Awaits!",
-		"Crumbus: Knitting Clouds into Cozy Thoughts!",
-		"Marmalade Skies and Pickle Rain, Only in Crumbus!",
-		"Gallop Through Puddles of Time with Crumbus!",
-		"Crumbus: Blending Echoes with Shades of Silence!",
-		"Chase the Invisible Butterflies, Discover Crumbus!",
-		"Sailing on a Sea of Glitter, It's Crumbus Weather!",
-		"Unfold the Map of Imaginary Lands with Crumbus!",
-		"Twist the Dial, Tune into the Crumbus Frequency!",
-		"Leap Over Mountains of Marshmallow with Crumbus!",
-		"Harness the Power of Neon Carrots, Power Up Crumbus!",
-		"Crumbus: Surfing the Cosmic Milkshake Waves!",
-		"Stitch Time with Yarns of Stardust, Courtesy of Crumbus!",
-		"Doodle Your Dreams in the Margins of Crumbus!",
-		"Crumbus: Brewing a Pot of Invisible Tea!",
-		"Noodle the Essence, Crumbus the Horizon!",
-		"Crumbus: Elevate the Lavender Whispers!",
-		"Tickle the Moon with a Feather of Crumbus!",
-		"Whispering Alphabets in the Soup of Crumbus!",
-		"Gargle Stardust, Swallow Crumbus!",
-		"Crumbus: Munching on the Echoes of Color!",
-		"Sprout Wings of Jam, Fly with Crumbus!",
-		"Knit Socks for the Fishes, Courtesy of Crumbus!",
-		"Jazz Up the Vacuum, Crumbus Style!",
-		"Dance with the Wiggling Chair Legs, Crumbus is in Tune!",
-		"Crumbus: Where Time Wears a Bowtie!",
-		"Throw Glitter at the Sun, Shout 'Crumbus'!",
-		"Ride the Carousel of Invisible Flavors with Crumbus!",
-		"Crumbus: Lasso a Dancing Teacup!",
-		"Twirl the Spaghetti of Impossibility, Crumbus Cheers!",
-		"Sneeze Out a Symphony, Compose with Crumbus!",
-		"Crumbus: Where Rainbows Recite Poetry!",
-		"Hopscotch on the Lines of Your Palms with Crumbus!",
-		"Crumbus: Sip the Whispering Breeze!",
-		"Inflate Balloons with Laughter, Let Crumbus Guide!",
+		"Azinine: Because Reality Needed a Reboot!",
+		"Unravel the Fabric of Usual, Stitch by Azinine!",
+		"Hop on the Azinine, Where Directions Don't Matter!",
+		"Squeeze More Out of Nowhere with Azinine!",
+		"Whistle While You Work, Dance While You Azinine!",
+		"Turn Left at Tomorrow, You're on Azinine Time!",
+		"From Nonsense to Sense, All Aboard the Azinine Express!",
+		"Azinine: Where the Ordinary Meets the Bread Crumbs.",
+		"Dive into the Dough of Innovation with Azinine!",
+		"Azinine: Because Reality Was Too Mainstream.",
+		"Sprinkle a Little Azinine on Your Day!",
+		"Unleash the Whimsy - Azinine is Here!",
+		"Azinine: Baking Your Ideas to Perfection.",
+		"Twist, Toss, Crumble - That's the Azinine Way!",
+		"Keep Crumbing Along with Azinine!",
+		"Catch the Crumbs of Creativity with Azinine.",
+		"Azinine: A Sprinkle of Nonsense in Every Byte.",
+		"Azinine: Orbiting the Bagel of Possibility!",
+		"Flip the Pancake Skyward with Azinine!",
+		"Buckle Your Shoe, Click Your Pen, Launch Azinine!",
+		"Echoes of Azinine, in a Whispering Cheese Wheel!",
+		"Juggle the Moon, Spin the Sun, It's Azinine Time!",
+		"Dance with Shadows, Paint with Wind, Azinine Awaits!",
+		"Azinine: Knitting Clouds into Cozy Thoughts!",
+		"Marmalade Skies and Pickle Rain, Only in Azinine!",
+		"Gallop Through Puddles of Time with Azinine!",
+		"Azinine: Blending Echoes with Shades of Silence!",
+		"Chase the Invisible Butterflies, Discover Azinine!",
+		"Sailing on a Sea of Glitter, It's Azinine Weather!",
+		"Unfold the Map of Imaginary Lands with Azinine!",
+		"Twist the Dial, Tune into the Azinine Frequency!",
+		"Leap Over Mountains of Marshmallow with Azinine!",
+		"Harness the Power of Neon Carrots, Power Up Azinine!",
+		"Azinine: Surfing the Cosmic Milkshake Waves!",
+		"Stitch Time with Yarns of Stardust, Courtesy of Azinine!",
+		"Doodle Your Dreams in the Margins of Azinine!",
+		"Azinine: Brewing a Pot of Invisible Tea!",
+		"Noodle the Essence, Azinine the Horizon!",
+		"Azinine: Elevate the Lavender Whispers!",
+		"Tickle the Moon with a Feather of Azinine!",
+		"Whispering Alphabets in the Soup of Azinine!",
+		"Gargle Stardust, Swallow Azinine!",
+		"Azinine: Munching on the Echoes of Color!",
+		"Sprout Wings of Jam, Fly with Azinine!",
+		"Knit Socks for the Fishes, Courtesy of Azinine!",
+		"Jazz Up the Vacuum, Azinine Style!",
+		"Dance with the Wiggling Chair Legs, Azinine is in Tune!",
+		"Azinine: Where Time Wears a Bowtie!",
+		"Throw Glitter at the Sun, Shout 'Azinine'!",
+		"Ride the Carousel of Invisible Flavors with Azinine!",
+		"Azinine: Lasso a Dancing Teacup!",
+		"Twirl the Spaghetti of Impossibility, Azinine Cheers!",
+		"Sneeze Out a Symphony, Compose with Azinine!",
+		"Azinine: Where Rainbows Recite Poetry!",
+		"Hopscotch on the Lines of Your Palms with Azinine!",
+		"Azinine: Sip the Whispering Breeze!",
+		"Inflate Balloons with Laughter, Let Azinine Guide!",
 	}
 	// Randomly select a slogan
 	selectedSlogan := centerString(slogans[rand.Intn(len(slogans))], 61)
@@ -1409,9 +1410,9 @@ func executionView(m model) string {
 	var b strings.Builder
 
 	if !m.pwndocAllDone {
-		b.WriteString("\n" + m.spinner.View() + " Crumbusing please wait...\n\n")
+		b.WriteString("\n" + m.spinner.View() + " Azinineing please wait...\n\n")
 	} else {
-		b.WriteString("\n✅ Crumbus complete\n\n")
+		b.WriteString("\n✅ Azinine complete\n\n")
 	}
 
 	// display progress checked/total for Pwndoc checks
@@ -1495,7 +1496,7 @@ func uploadView(m model) string {
 	if !m.doneUploading {
 		b.WriteString("\n" + m.spinner.View() + " Uploading please wait...\n\n")
 	} else {
-		b.WriteString("\n✅ Crumbus complete\n\n")
+		b.WriteString("\n✅ Azinine complete\n\n")
 	}
 
 	// display progress checked/total for Pwndoc checks
