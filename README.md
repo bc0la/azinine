@@ -19,7 +19,7 @@ Uses a combo of scoutsuite reports and manual queries as data sources.
 
 ### AWS Checks
 
-- [x] Access key last rotate date (to add configurable threshold)
+- [x] Access key last rotate date (to add configurable threshold via scoutsuite)
 - [ ] CloudFormation Template Analysis
 - [ ] Lambda Source Code Review
 - [ ] Lambda Environment Variables Analysis
