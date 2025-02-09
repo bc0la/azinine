@@ -4,6 +4,7 @@ Made with *<3* by cola
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -14,6 +15,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/charmbracelet/bubbles/cursor"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -191,6 +194,13 @@ type model struct {
 	pwndocAllDone bool
 	doneUploading bool
 	Uploading     bool
+
+	authModel azureAuthModel
+}
+
+type azureAuthModel struct {
+	authenticated bool
+	token         string
 }
 
 type configWrittenMsg struct{}
@@ -255,17 +265,13 @@ func initialModel() model {
 		// using complete to true at the start for non implemented modules
 		ModuleSelection: []Module{
 			{Name: "Pwndoc Checks", Selected: true, Complete: false},
-			{Name: "Non Pwndoc Checks", Selected: true, Complete: false},
-			{Name: "Guided Checks", Selected: true, Complete: false},
+			{Name: "Non Pwndoc Checks", Selected: false, Complete: false},
+			{Name: "Guided Checks", Selected: false, Complete: false},
 		},
 		PwndocModules: []Module{
 			{Name: "Access Key Age/Last Used", Selected: false, Complete: false, AffectedAmountSearchString: "%KEYS_AGE_AFFECTED_AMOUNT%", AffectedAssetsSearchString: "%KEYS_AGE_AFFECTED_ASSETS%"},
-			{Name: "Open S3 Buckets (Authenticated/Anonymous)", Selected: false, Checked: 0, Total: 0, Complete: false},
+			{Name: "Open Blobs (Authenticated/Anonymous)", Selected: false, Checked: 0, Total: 0, Complete: false},
 			{Name: "IMDSv1", Selected: false, Complete: true},
-			{Name: "Public RDS", Selected: false, Complete: true},
-			{Name: "Unencrypted EBS Snapshots", Selected: false, Complete: true},
-			{Name: "RDS Minor Version Upgrade (Informational)", Selected: false, Complete: true},
-			{Name: "Root Account in Use", Selected: false, Complete: true},
 		},
 		NonPwndocModules: []Module{
 			{Name: "cf-template-* S3/Cloudformation template injection", Selected: false, Complete: true},
@@ -296,6 +302,8 @@ func initialModel() model {
 
 		spinner:       s,
 		pwndocAllDone: false,
+
+		authModel: initialAzureAuthModel(),
 	}
 
 	// Dynamically create text inputs based on the fields of ConfigVars
@@ -320,6 +328,13 @@ func initialModel() model {
 	}
 
 	return m
+}
+
+func initialAzureAuthModel() azureAuthModel {
+	return azureAuthModel{
+		authenticated: false,
+		token:         "",
+	}
 }
 
 func startTui() {
@@ -364,6 +379,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 	} else if !m.ModuleSelected {
 		return moduleSelection(msg, m)
+	} else if m.ModuleSelection[0].Selected && !m.authModel.authenticated {
+		m, cmd := m.updateAzureAuth(msg)
+		return m, cmd
 	} else if m.ModuleSelection[0].Selected {
 		m, cmd := m.updatePwndocChecks(msg)
 		return m, cmd
@@ -547,6 +565,38 @@ func moduleSelection(msg tea.Msg, m model) (tea.Model, tea.Cmd) {
 		}
 	}
 	return m, tea.Batch(cmds...)
+}
+
+func (m *model) updateAzureAuth(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "enter":
+			// Perform authentication using InteractiveBrowserCredential
+			cred, err := azidentity.NewInteractiveBrowserCredential(nil)
+			if err != nil {
+				fmt.Println("Failed to create credential:", err)
+				return m, nil
+			}
+
+			token, err := cred.GetToken(context.TODO(), policy.TokenRequestOptions{
+				Scopes: []string{"https://management.azure.com/.default"},
+			})
+			if err != nil {
+				fmt.Println("Failed to get token:", err)
+				return m, nil
+			}
+
+			m.authModel.authenticated = true
+			m.authModel.token = token.Token
+			m.ModuleSelection[0].Selected = false
+			return m, nil
+		case "q", "esc":
+			// Exit the Azure authentication view
+			return m, tea.Quit
+		}
+	}
+	return m, nil
 }
 
 func (m *model) updatePwndocChecks(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -990,6 +1040,8 @@ func (m model) View() string {
 		s = configurationView(m)
 	} else if !m.ModuleSelected {
 		s = moduleSelectionView(m)
+	} else if m.ModuleSelection[0].Selected && !m.authModel.authenticated {
+		s = azureAuthView(m)
 	} else if m.ModuleSelection[0].Selected {
 		s = pwndocChecksView(m)
 	} else if m.ModuleSelection[1].Selected {
@@ -1141,6 +1193,22 @@ func moduleSelectionView(m model) string {
 		subtleStyle.Render("space to toggle selection") + dotStyle +
 		subtleStyle.Render("enter to confirm") + dotStyle +
 		subtleStyle.Render("esc to quit"))
+	return b.String()
+}
+
+func azureAuthView(m model) string {
+	var b strings.Builder
+	b.WriteString("Azure Authentication:\n\n")
+
+	if m.authModel.authenticated {
+		b.WriteString("Authenticated successfully!\n")
+		b.WriteString(fmt.Sprintf("Token: %s\n", m.authModel.token))
+	} else {
+		b.WriteString("Press enter to authenticate using your browser.\n")
+	}
+
+	b.WriteString(subtleStyle.Render("\nPress enter to authenticate") + dotStyle +
+		subtleStyle.Render("q, esc to quit"))
 	return b.String()
 }
 
