@@ -76,7 +76,7 @@ var (
 	ramp = makeRampStyles("#B14FFF", "#00FFA3", progressBarWidth)
 	//gradient colors for ascii art, last value is length of ascii art plus message)
 	//asciiramp = makeRampStyles("#B14FFF", "#00FFA3", 427)
-	asciiramp     = makeRampStyles("#B14FFF", "#00FFA3", 181)
+	asciiramp     = makeRampStyles("#B14FFF", "#00FFA3", 256)
 	sloganramp    = makeRampStyles("#B14FFF", "#00FFA3", 61)
 	focusedButton = focusedStyle.Copy().Render("[ Submit ]")
 	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
@@ -1235,7 +1235,7 @@ func moduleSelectionView(m model) string {
 		"Inflate Balloons with Laughter, Let Azinine Guide!",
 	}
 	// Randomly select a slogan
-	selectedSlogan := centerString(slogans[rand.Intn(len(slogans))], 61)
+	selectedSlogan := centerString(slogans[rand.Intn(len(slogans))], 100)
 
 	// Append the slogan to the ASCII art
 	//asciiArt = append(asciiArt, "", selectedSlogan)
