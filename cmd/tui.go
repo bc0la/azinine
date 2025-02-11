@@ -77,7 +77,7 @@ var (
 	//gradient colors for ascii art, last value is length of ascii art plus message)
 	//asciiramp = makeRampStyles("#B14FFF", "#00FFA3", 427)
 	asciiramp     = makeRampStyles("#B14FFF", "#00FFA3", 256)
-	sloganramp    = makeRampStyles("#B14FFF", "#00FFA3", 61)
+	sloganramp    = makeRampStyles("#B14FFF", "#00FFA3", 90)
 	focusedButton = focusedStyle.Copy().Render("[ Submit ]")
 	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
 )
